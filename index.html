@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>子機パネル</title>
+
+  <style>
+
+body{
+  margin:0;
+  font-family: Arial, sans-serif;
+  text-align:center;
+  background:white;
+  color:#111;
+  transition:0.5s;
+}
+
+.black{
+  background:black;
+}
+
+.container{
+  margin-top:15vh;
+}
+
+.time{
+  font-size:80px;
+  font-weight:bold;
+  margin-bottom:40px;
+}
+
+.info{
+  font-size:60px;
+  padding:20px;
+}
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="time" id="time"></div>
+  <div class="info" id="info">待機中</div>
+</div>
+
+  <script>
+
+const firebaseConfig = {
+    apiKey: "AIzaSyAG45X-OXQzr_doNzlXNzdqKZ5oJwiNHnc",
+    authDomain: "kaigo-pane1.firebaseapp.com",
+    databaseURL: "https://kaigo-pane1-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "kaigo-pane1",
+    storageBucket: "kaigo-pane1.firebasestorage.app",
+    messagingSenderId: "500881477374",
+    appId: "1:500881477374:web:2efa2cf7a5d58030bcdfaf"
+  };
+
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+
+// 🕒 時計
+function updateTime(){
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2,'0');
+  const m = String(now.getMinutes()).padStart(2,'0');
+  document.getElementById("time").innerText = h + ":" + m;
+}
+setInterval(updateTime,1000);
+updateTime();
+
+// 🌙 nightMode監視
+database.ref("settings/nightMode").on("value", function(snapshot){
+  const nightMode = snapshot.val();
+
+  if(nightMode === true){
+    document.body.classList.add("black");
+    document.querySelector(".container").style.display="none";
+  }else{
+    document.body.classList.remove("black");
+    document.querySelector(".container").style.display="block";
+  }
+});
+
+  </script>
+
+</body>
+</html>
